@@ -20,8 +20,9 @@ Money usd10 = Money.of("10.00", usd);
 
 2. Arithmetic operations on money (add, subtract, divide, multiply), backed by BigDecimal precision and currency rounding:
 ```
-Money usd1 = usd10.divideBy(new BigDecimal(10));
 Money usd11 = usd10.plus(usd1);;
+Money usd1 = usd10.divideBy(new BigDecimal(10));
+Money multipliedByAndRundedUp = usd10.multiplyBy(new BigDecimal(3.1245), RoundingMode.UP);
 ```
 
 3. Defining currency pairs and exchange rates for the purpose of conversion between currencies:

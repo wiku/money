@@ -23,7 +23,7 @@ import java.math.RoundingMode;
     public Money convert( Money money, RoundingMode roundingMode )
     {
         Currency currency = money.getCurrency();
-        
+
         if( isBaseCurrency(currency) )
         {
             return Money.of(money.getAmount()
