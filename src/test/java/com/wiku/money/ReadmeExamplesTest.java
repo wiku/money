@@ -14,8 +14,8 @@ public class ReadmeExamplesTest
 
         Money usd10 = Money.of("10.00", usd);
 
-        Money usd1 = usd10.divide(new BigDecimal(10));
-
+        Money usd1 = usd10.divideBy(new BigDecimal(10));
+        Money usd11 = usd10.plus(usd1);
 
         Pair eurUsd = Pair.of(eur, usd);
         ExchangeRate eurUsdRate = ExchangeRate.of("1.22546", eurUsd);

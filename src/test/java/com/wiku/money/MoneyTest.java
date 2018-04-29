@@ -32,7 +32,7 @@ public class MoneyTest
     @Test
     public void canDivideByBigDecimal()
     {
-        Money result = testMoney.divide(new BigDecimal(10));
+        Money result = testMoney.divideBy(new BigDecimal(10));
         
         assertEquals(Money.of("1.01",PLN), result);
     }
@@ -40,7 +40,7 @@ public class MoneyTest
     @Test
     public void canMultiplyByBigDecimal()
     {
-        Money multiplied = testMoney.multiply(BigDecimal.valueOf(5));
+        Money multiplied = testMoney.multiplyBy(BigDecimal.valueOf(5));
 
         assertEquals(Money.of("50.50", PLN), multiplied);
     }
@@ -48,7 +48,7 @@ public class MoneyTest
     @Test
     public void canSubtractMoneyFromMoney()
     {
-        Money subtracted = testMoney.subtract(Money.of("5.2", PLN));
+        Money subtracted = testMoney.minus(Money.of("5.2", PLN));
 
         assertEquals(Money.of("4.90", PLN), subtracted);
     }
@@ -62,7 +62,7 @@ public class MoneyTest
     @Test
     public void canAddMoneyToMoney()
     {
-        Money sum = testMoney.add(Money.of("1", PLN));
+        Money sum = testMoney.plus(Money.of("1", PLN));
 
         assertEquals(Money.of("11.10", PLN), sum);
     }
@@ -70,7 +70,7 @@ public class MoneyTest
     @Test
     public void canAddNegativeAmountOfMoneyToMoney()
     {
-        Money subtracted = testMoney.add(Money.of("-5.2", PLN));
+        Money subtracted = testMoney.plus(Money.of("-5.2", PLN));
 
         assertEquals(Money.of("4.90", PLN), subtracted);
     }
@@ -78,12 +78,12 @@ public class MoneyTest
     @Test(expected = IllegalArgumentException.class)
     public void throwsExceptionWhenTryingToAddMoneyOfDifferentCurrencies()
     {
-        testMoney.add(Money.of("10", USD));
+        testMoney.plus(Money.of("10", USD));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsExceptionWhenTryingToSubtractMoneyOfDifferentCurrencies()
     {
-        testMoney.subtract(Money.of("10", USD));
+        testMoney.minus(Money.of("10", USD));
     }
 }

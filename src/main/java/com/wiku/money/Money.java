@@ -16,18 +16,18 @@ import lombok.Data;
                 currency);
     }
 
-    public Money divide( BigDecimal factor )
+    public Money divideBy( BigDecimal factor )
     {
         return new Money(amount.divide(factor), currency);
     }
 
-    public Money multiply( BigDecimal multiplier )
+    public Money multiplyBy( BigDecimal multiplier )
     {
         return new Money(amount.multiply(multiplier).setScale(currency.getFractionDigits(), RoundingMode.DOWN),
                 currency);
     }
 
-    public Money subtract( Money money )
+    public Money minus( Money money )
     {
         if( money.currency.equals(currency) )
         {
@@ -46,7 +46,7 @@ import lombok.Data;
         return amount.toPlainString() + " " + currency.getSymbol();
     }
 
-    public Money add( Money moneyToAdd )
+    public Money plus( Money moneyToAdd )
     {
         if( moneyToAdd.currency.equals(currency) )
         {
