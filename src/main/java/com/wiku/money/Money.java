@@ -12,18 +12,41 @@ import lombok.Data;
 
     public static Money of( String amountAsString, Currency currency )
     {
-        return new Money(new BigDecimal(amountAsString).setScale(currency.getFractionDigits(), RoundingMode.HALF_DOWN),
-                currency);
+        BigDecimal amount = new BigDecimal(amountAsString);
+        assertAmountStringMatchesCurrencyPrecision(amountAsString, currency, amount);
+        return new Money(amount.setScale(currency.getFractionDigits(), RoundingMode.HALF_DOWN), currency);
+    }
+
+    private static void assertAmountStringMatchesCurrencyPrecision( String amountAsString,
+            Currency currency,
+            BigDecimal amount )
+    {
+        if( amount.scale() > currency.getFractionDigits() )
+        {
+            throw new IllegalArgumentException(
+                    "Money amount " + amountAsString + " does not match required currency precision: "
+                            + currency.getFractionDigits());
+        }
     }
 
     public Money divideBy( BigDecimal factor )
     {
-        return new Money(amount.divide(factor), currency);
+        return divideBy(factor, RoundingMode.HALF_DOWN);
+    }
+
+    public Money divideBy( BigDecimal factor, RoundingMode roundingMode )
+    {
+        return new Money(amount.divide(factor, roundingMode), currency);
     }
 
     public Money multiplyBy( BigDecimal multiplier )
     {
-        return new Money(amount.multiply(multiplier).setScale(currency.getFractionDigits(), RoundingMode.DOWN),
+        return multiplyBy(multiplier, RoundingMode.HALF_DOWN);
+    }
+
+    public Money multiplyBy( BigDecimal multiplier, RoundingMode roundingMode )
+    {
+        return new Money(amount.multiply(multiplier).setScale(currency.getFractionDigits(), roundingMode),
                 currency);
     }
 
@@ -58,4 +81,5 @@ import lombok.Data;
                     "Adding different currencies is not allowed. Attempted to add " + moneyToAdd + " to " + this);
         }
     }
+
 }
