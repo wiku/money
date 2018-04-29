@@ -17,17 +17,23 @@ import lombok.Data;
 
     public Money convert( Money money )
     {
+        return convert(money, RoundingMode.HALF_DOWN);
+    }
+
+
+    public Money convert( Money money, RoundingMode roundingMode )
+    {
         if( money.getCurrency().equals(pair.getBase()) )
         {
             return new Money(money.getAmount()
                     .multiply(rate)
-                    .setScale(pair.getQuote().getFractionDigits(), RoundingMode.DOWN), pair.getQuote());
+                    .setScale(pair.getQuote().getFractionDigits(), roundingMode), pair.getQuote());
         }
         else if( money.getCurrency().equals(pair.getQuote()) )
         {
             return new Money(money.getAmount()
-                    .setScale(pair.getBase().getFractionDigits(), RoundingMode.DOWN)
-                    .divide(rate, RoundingMode.DOWN), pair.getBase());
+                    .setScale(pair.getBase().getFractionDigits(), roundingMode)
+                    .divide(rate, roundingMode), pair.getBase());
         }
         else
         {

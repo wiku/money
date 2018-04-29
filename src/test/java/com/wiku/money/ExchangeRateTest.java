@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import java.math.RoundingMode;
+
 public class ExchangeRateTest
 {
     private static final Currency BTC = new Currency("BTC", 8);
@@ -27,6 +29,14 @@ public class ExchangeRateTest
     {        
         Money btc = exchangeRate.convert(Money.of("1000.0",USD));
         assertEquals(Money.of("0.07142857",BTC), btc);
+    }
+
+
+    @Test
+    public void canConvertFromQuoteToBaseWithRoundingMode()
+    {
+        Money btc = exchangeRate.convert(Money.of("1000.0",USD), RoundingMode.UP);
+        assertEquals(Money.of("0.07142858",BTC), btc);
     }
 
     @Test
