@@ -1,9 +1,9 @@
 package com.wiku.money;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
-import lombok.Data;
 
 @Data public class ExchangeRate
 {
@@ -20,18 +20,17 @@ import lombok.Data;
         return convert(money, RoundingMode.HALF_DOWN);
     }
 
-
     public Money convert( Money money, RoundingMode roundingMode )
     {
         if( money.getCurrency().equals(pair.getBase()) )
         {
-            return new Money(money.getAmount()
+            return Money.of(money.getAmount()
                     .multiply(rate)
                     .setScale(pair.getQuote().getFractionDigits(), roundingMode), pair.getQuote());
         }
         else if( money.getCurrency().equals(pair.getQuote()) )
         {
-            return new Money(money.getAmount()
+            return Money.of(money.getAmount()
                     .setScale(pair.getBase().getFractionDigits(), roundingMode)
                     .divide(rate, roundingMode), pair.getBase());
         }
