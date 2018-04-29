@@ -1,19 +1,38 @@
 package com.wiku.money;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class ExchangeRateTest
 {
-    private static final Currency BTC = new Currency("BTC", 8);
-    private static final Currency USD = new Currency("USD", 2);
-    private static final Currency PLN = new Currency("PLN", 2);
+    private static final Currency BTC = Currency.of("BTC", 8);
+    private static final Currency USD = Currency.of("USD", 2);
+    private static final Currency PLN = Currency.of("PLN", 2);
 
     Pair btcusd = Pair.of(BTC, USD);
     ExchangeRate exchangeRate = ExchangeRate.of("14000", btcusd);
+
+    @Test
+    public void canReturnProperFieldsWhenGettersCalled()
+    {
+        assertEquals(btcusd, exchangeRate.getPair());
+        assertEquals(new BigDecimal("14000"), exchangeRate.getRate());
+    }
+
+    @Test
+    public void canCalculateEqualsAndHashCode()
+    {
+        assertEquals(ExchangeRate.of("14000", btcusd), exchangeRate);
+        assertEquals(ExchangeRate.of("14000", btcusd).hashCode(), exchangeRate.hashCode());
+        assertNotEquals(ExchangeRate.of("14001", btcusd), exchangeRate);
+        assertNotEquals(ExchangeRate.of("14000", Pair.of(USD,BTC)), exchangeRate);
+
+    }
 
     @Test public void canConvertFromBaseToQuote()
     {

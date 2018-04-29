@@ -1,11 +1,11 @@
 package com.wiku.money;
 
-import lombok.Data;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
-@Data public class ExchangeRate
+public class ExchangeRate
 {
     private final BigDecimal rate;
     private final Pair pair;
@@ -13,6 +13,16 @@ import java.math.RoundingMode;
     public static ExchangeRate of( String rate, Pair pair )
     {
         return new ExchangeRate(new BigDecimal(rate), pair);
+    }
+
+    public BigDecimal getRate()
+    {
+        return rate;
+    }
+
+    public Pair getPair()
+    {
+        return pair;
     }
 
     public Money convert( Money money )
@@ -42,6 +52,33 @@ import java.math.RoundingMode;
         }
     }
 
+    @Override public boolean equals( Object o )
+    {
+        if( this == o )
+            return true;
+        if( o == null || getClass() != o.getClass() )
+            return false;
+        ExchangeRate that = (ExchangeRate)o;
+        return Objects.equals(rate, that.rate) && Objects.equals(pair, that.pair);
+    }
+
+    @Override public int hashCode()
+    {
+
+        return Objects.hash(rate, pair);
+    }
+
+    public String toString()
+    {
+        return String.format("%s(%s)", rate.toPlainString(), pair);
+    }
+
+    private ExchangeRate( BigDecimal rate, Pair pair )
+    {
+        this.rate = rate;
+        this.pair = pair;
+    }
+
     private boolean isQuoteCurrency( Currency currency )
     {
         return currency.equals(pair.getQuote());
@@ -52,8 +89,5 @@ import java.math.RoundingMode;
         return currency.equals(pair.getBase());
     }
 
-    public String toString()
-    {
-        return String.format("%s(%s)", rate.toPlainString(), pair);
-    }
+
 }
