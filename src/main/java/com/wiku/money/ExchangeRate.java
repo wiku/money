@@ -22,13 +22,15 @@ import java.math.RoundingMode;
 
     public Money convert( Money money, RoundingMode roundingMode )
     {
-        if( money.getCurrency().equals(pair.getBase()) )
+        Currency currency = money.getCurrency();
+        
+        if( isBaseCurrency(currency) )
         {
             return Money.of(money.getAmount()
                     .multiply(rate)
                     .setScale(pair.getQuote().getFractionDigits(), roundingMode), pair.getQuote());
         }
-        else if( money.getCurrency().equals(pair.getQuote()) )
+        else if( isQuoteCurrency(currency) )
         {
             return Money.of(money.getAmount()
                     .setScale(pair.getBase().getFractionDigits(), roundingMode)
@@ -36,8 +38,18 @@ import java.math.RoundingMode;
         }
         else
         {
-            throw new IllegalArgumentException("Cannot convert " + money.getCurrency() + " using rate for " + pair);
+            throw new IllegalArgumentException("Cannot convert " + currency + " using rate for " + pair);
         }
+    }
+
+    private boolean isQuoteCurrency( Currency currency )
+    {
+        return currency.equals(pair.getQuote());
+    }
+
+    private boolean isBaseCurrency( Currency currency )
+    {
+        return currency.equals(pair.getBase());
     }
 
     public String toString()
