@@ -12,4 +12,6 @@ public class PairTest
     {
         assertEquals("USDPLN", USDPLN.toString());
     }
+
+
 }
