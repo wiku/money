@@ -7,6 +7,12 @@ My own simple API to perform basic money and currency operations.
 Currency usd = Currency.of("USD", 2);
 Currency eur = Currency.of("EUR", 2);
 ```
+
+This allows you to easily define yor own custom currencies, eg. bitcoin:
+```
+Currency btc = Currency.of("BTC", 8);
+```
+
 2. Money abstraction:
 ```
 Money usd10 = Money.of("10.00", usd);

@@ -12,6 +12,9 @@ public class ReadmeExamplesTest
         Currency usd = Currency.of("USD", 2);
         Currency eur = Currency.of("EUR", 2);
 
+        Currency btc = Currency.of("BTC", 8);
+
+
         Money usd10 = Money.of("10.00", usd);
 
         Money usd1 = usd10.divideBy(new BigDecimal(10));
