@@ -7,26 +7,34 @@ import lombok.Data;
 
 @Data public class Money
 {
+    public static final String SUBTRACT_CURRENCY_EXCEPTION_FORMAT = "Subtraction of different currencies is not allowed. Attempted to subtract %s from %s";
+    public static final String ADD_CURRENCY_EXCEPTION_FORMAT = "Adding different currencies is not allowed. Attempted to add %s to %s";
+
     private final BigDecimal amount;
     private final Currency currency;
 
     public static Money of( String amountAsString, Currency currency )
     {
         BigDecimal amount = new BigDecimal(amountAsString);
-        assertAmountStringMatchesCurrencyPrecision(amountAsString, currency, amount);
+        return Money.of(amount, currency);
+    }
+
+    public static Money of( BigDecimal amount, Currency currency )
+    {
+        assertAmountStringMatchesCurrencyPrecision(amount, currency);
         return new Money(amount.setScale(currency.getFractionDigits(), RoundingMode.HALF_DOWN), currency);
     }
 
-    private static void assertAmountStringMatchesCurrencyPrecision( String amountAsString,
-            Currency currency,
-            BigDecimal amount )
+    public Money plus( Money moneyToAdd )
     {
-        if( amount.scale() > currency.getFractionDigits() )
-        {
-            throw new IllegalArgumentException(
-                    "Money amount " + amountAsString + " does not match required currency precision: "
-                            + currency.getFractionDigits());
-        }
+        assertSameCurrency(moneyToAdd, ADD_CURRENCY_EXCEPTION_FORMAT);
+        return Money.of(amount.add(moneyToAdd.amount), currency);
+    }
+
+    public Money minus( Money moneyToSubtract )
+    {
+        assertSameCurrency(moneyToSubtract, SUBTRACT_CURRENCY_EXCEPTION_FORMAT);
+        return Money.of(amount.subtract(moneyToSubtract.amount), currency);
     }
 
     public Money divideBy( BigDecimal factor )
@@ -36,7 +44,7 @@ import lombok.Data;
 
     public Money divideBy( BigDecimal factor, RoundingMode roundingMode )
     {
-        return new Money(amount.divide(factor, roundingMode), currency);
+        return Money.of(amount.divide(factor, roundingMode), currency);
     }
 
     public Money multiplyBy( BigDecimal multiplier )
@@ -46,22 +54,7 @@ import lombok.Data;
 
     public Money multiplyBy( BigDecimal multiplier, RoundingMode roundingMode )
     {
-        return new Money(amount.multiply(multiplier).setScale(currency.getFractionDigits(), roundingMode),
-                currency);
-    }
-
-    public Money minus( Money money )
-    {
-        if( money.currency.equals(currency) )
-        {
-            return new Money(amount.subtract(money.amount), currency);
-        }
-        else
-        {
-            throw new IllegalArgumentException(
-                    "Subtraction of different currencies is not allowed. Attempted to subtract " + money + " from "
-                            + this);
-        }
+        return Money.of(amount.multiply(multiplier).setScale(currency.getFractionDigits(), roundingMode), currency);
     }
 
     @Override public String toString()
@@ -69,16 +62,21 @@ import lombok.Data;
         return amount.toPlainString() + " " + currency.getSymbol();
     }
 
-    public Money plus( Money moneyToAdd )
+    private static void assertAmountStringMatchesCurrencyPrecision( BigDecimal amount, Currency currency )
     {
-        if( moneyToAdd.currency.equals(currency) )
-        {
-            return new Money(amount.add(moneyToAdd.amount), currency);
-        }
-        else
+        if( amount.scale() > currency.getFractionDigits() )
         {
             throw new IllegalArgumentException(
-                    "Adding different currencies is not allowed. Attempted to add " + moneyToAdd + " to " + this);
+                    "Money amount " + amount.toPlainString() + " does not match required currency precision: "
+                            + currency.getFractionDigits());
+        }
+    }
+
+    private void assertSameCurrency( Money money, String subtractExceptionMessageFormat )
+    {
+        if( !money.currency.equals(currency) )
+        {
+            throw new IllegalArgumentException(String.format(subtractExceptionMessageFormat, money, this));
         }
     }
 
