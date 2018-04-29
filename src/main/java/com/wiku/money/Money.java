@@ -21,7 +21,7 @@ import lombok.Data;
 
     public static Money of( BigDecimal amount, Currency currency )
     {
-        assertAmountStringMatchesCurrencyPrecision(amount, currency);
+        assertAmountScaleMatchesCurrencyPrecision(amount, currency);
         return new Money(amount.setScale(currency.getFractionDigits(), RoundingMode.HALF_DOWN), currency);
     }
 
@@ -62,7 +62,7 @@ import lombok.Data;
         return amount.toPlainString() + " " + currency.getSymbol();
     }
 
-    private static void assertAmountStringMatchesCurrencyPrecision( BigDecimal amount, Currency currency )
+    private static void assertAmountScaleMatchesCurrencyPrecision( BigDecimal amount, Currency currency )
     {
         if( amount.scale() > currency.getFractionDigits() )
         {
