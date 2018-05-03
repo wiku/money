@@ -12,7 +12,20 @@ public class ExchangeRate
 
     public static ExchangeRate of( String rate, Pair pair )
     {
-        return new ExchangeRate(new BigDecimal(rate), pair);
+        return of(new BigDecimal(rate), pair);
+    }
+
+    public static ExchangeRate of( BigDecimal rate, Pair pair )
+    {
+        return new ExchangeRate(rate, pair);
+    }
+
+    public static ExchangeRate of( Money amount, Money worth, int decimalPrecision )
+    {
+        return ExchangeRate.of(worth.getAmount()
+                .setScale(decimalPrecision)
+                .divide(amount.getAmount(), RoundingMode.HALF_DOWN),
+                Pair.of(amount.getCurrency(), worth.getCurrency()));
     }
 
     public BigDecimal getRate()
@@ -29,6 +42,7 @@ public class ExchangeRate
     {
         return convert(money, RoundingMode.HALF_DOWN);
     }
+
 
     public Money convert( Money money, RoundingMode roundingMode )
     {

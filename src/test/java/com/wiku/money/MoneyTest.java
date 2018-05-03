@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class MoneyTest
 {
@@ -68,7 +70,6 @@ public class MoneyTest
     @Test public void canSubtractMoneyFromMoney()
     {
         Money subtracted = testMoney.minus(Money.of("5.2", PLN));
-
         assertEquals(Money.of("4.90", PLN), subtracted);
     }
 
@@ -99,5 +100,18 @@ public class MoneyTest
     @Test(expected = IllegalArgumentException.class) public void throwsExceptionWhenTryingToSubtractMoneyOfDifferentCurrencies()
     {
         testMoney.minus(Money.of("10", USD));
+    }
+
+    @Test
+    public void canCompareMoneyOfSameCurrency()
+    {
+        assertTrue(testMoney.isMoreThan(Money.of("10.00", PLN)));
+        assertFalse(testMoney.isMoreThan(Money.of("10.10", PLN)));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void cannotCompareMoneyOfDifferentCurrencies()
+    {
+        testMoney.isMoreThan(Money.of("10.00", USD));
     }
 }

@@ -17,20 +17,18 @@ public class ExchangeRateTest
     Pair btcusd = Pair.of(BTC, USD);
     ExchangeRate exchangeRate = ExchangeRate.of("14000", btcusd);
 
-    @Test
-    public void canReturnProperFieldsWhenGettersCalled()
+    @Test public void canReturnProperFieldsWhenGettersCalled()
     {
         assertEquals(btcusd, exchangeRate.getPair());
         assertEquals(new BigDecimal("14000"), exchangeRate.getRate());
     }
 
-    @Test
-    public void canCalculateEqualsAndHashCode()
+    @Test public void canCalculateEqualsAndHashCode()
     {
         assertEquals(ExchangeRate.of("14000", btcusd), exchangeRate);
         assertEquals(ExchangeRate.of("14000", btcusd).hashCode(), exchangeRate.hashCode());
         assertNotEquals(ExchangeRate.of("14001", btcusd), exchangeRate);
-        assertNotEquals(ExchangeRate.of("14000", Pair.of(USD,BTC)), exchangeRate);
+        assertNotEquals(ExchangeRate.of("14000", Pair.of(USD, BTC)), exchangeRate);
 
     }
 
@@ -69,4 +67,9 @@ public class ExchangeRateTest
         exchangeRate.convert(Money.of("1000.0", PLN));
     }
 
+    @Test public void canCalculateExchangeRateBasedOnAmountAndWorth()
+    {
+        ExchangeRate calculatedBtcPln = ExchangeRate.of(Money.of("2.00", BTC), Money.of("2000.00", PLN), 3);
+        assertEquals(ExchangeRate.of("1000.000", Pair.of(BTC, PLN)), calculatedBtcPln);
+    }
 }

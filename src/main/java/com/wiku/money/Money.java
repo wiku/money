@@ -15,8 +15,18 @@ public class Money
 
     public static Money of( String amountAsString, Currency currency )
     {
+        assertNotNull(amountAsString, "Null amount.");
+        assertNotNull(currency, "Null currency.");
         BigDecimal amount = new BigDecimal(amountAsString);
         return Money.of(amount, currency);
+    }
+
+    private static void assertNotNull( Object object, String s )
+    {
+        if( object == null )
+        {
+            throw new NullPointerException(s);
+        }
     }
 
     public static Money of( BigDecimal amount, Currency currency )
@@ -25,6 +35,10 @@ public class Money
         return new Money(amount.setScale(currency.getFractionDigits(), RoundingMode.HALF_DOWN), currency);
     }
 
+    public static Money zero( Currency currency )
+    {
+        return Money.of(BigDecimal.ZERO.setScale(currency.getFractionDigits()), currency);
+    }
 
     public BigDecimal getAmount()
     {
@@ -114,4 +128,9 @@ public class Money
         }
     }
 
+    public boolean isMoreThan( Money money )
+    {
+        assertSameCurrency(money, String.format("Cannot directly compare %s with %s.", this, money));
+        return this.getAmount().compareTo(money.getAmount()) > 0;
+    }
 }
